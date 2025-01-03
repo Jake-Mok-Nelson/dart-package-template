@@ -15,7 +15,7 @@ fi
 # Create a new Dart package
 if [ -z "$PACKAGE_NAME" ]; then
   echo "Creating a new Dart package in the repository root."
-  dart create .
+  dart create -t package . --force
 else
   echo "Creating a new Dart package '$PACKAGE_NAME' in the repository root."
   dart create -t package $PACKAGE_NAME .
