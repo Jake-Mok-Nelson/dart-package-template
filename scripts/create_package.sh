@@ -1,17 +1,26 @@
 #!/bin/bash
+set -e
 
 # Script to create a new Dart package in the repository root
 
 # Check if a package name is provided
 if [ -z "$1" ]; then
-  echo "Please provide a package name."
-  exit 1
+  # Extract the repository name from the current directory
+  REPO_NAME=$(basename $(git rev-parse --show-toplevel))
+  echo "No package name provided. Using repository name '$REPO_NAME' as the package name."
+else
+  PACKAGE_NAME=$1
 fi
 
-PACKAGE_NAME=$1
-
 # Create a new Dart package
-dart create -t package $PACKAGE_NAME
+if [ -z "$PACKAGE_NAME" ]; then
+  echo "Creating a new Dart package in the repository root."
+  dart create .
+else
+  echo "Creating a new Dart package '$PACKAGE_NAME' in the repository root."
+  dart create -t package $PACKAGE_NAME .
+fi
+
 
 # Navigate to the package directory
 cd $PACKAGE_NAME

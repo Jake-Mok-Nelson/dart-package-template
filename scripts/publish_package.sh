@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Script to publish a Dart package
 
 # Check if the pubspec.yaml file exists

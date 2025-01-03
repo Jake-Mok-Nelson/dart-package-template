@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Script to tag the repository
 
 # Check if the pubspec.yaml file exists

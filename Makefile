@@ -2,7 +2,7 @@
 
 # Command to create a new Dart package
 create_package:
-	sh scripts/create_package.sh
+	sh scripts/create_package.sh $(ARGS)
 
 # Command to publish a Dart package
 publish_package:
@@ -10,7 +10,7 @@ publish_package:
 
 # Command to bump the semver version (major, minor, patch) in the pubspec.yaml
 bump_version:
-	sh scripts/bump_version.sh
+	sh scripts/bump_version.sh  $(ARGS)
 
 # Command to tag the repository with a semver from pubspec.yaml
 tag_repository:
@@ -40,36 +40,19 @@ generate:
 watch:
 	dart run build_runner watch
 
-# Command to run dart tests
+# Command to run dart tests with coverage
 test:
-	dart test
+	dart test --coverage=coverage
 
-# Command to release the package to pub.dev
-make-release-pub-dev:
-	make clean
-	make generate
-	make dart_fix
-	make dart_format
-	make dart_analyze
-	make generate
-	make test
-	make docs
-	make bump_version
-	make tag_repository
-	make publish_package
+# Command to perform pre-requisite steps to release the package
+build:	clean generate dart_fix dart_format dart_analyze docs test
 
 # Command to release the package to GitHub
-make-release-github:
-	make clean
-	make generate
-	make dart_fix
-	make dart_format
-	make dart_analyze
-	make generate
-	make test
-	make docs
-	make bump_version
-	make tag_repository
+release-github: test bump_version tag_repository
+
+# Command to release the package to pub.dev
+release-pub-dev: release-github
+
 
 # Command to clean temp files
 clean:
@@ -78,4 +61,4 @@ clean:
 	rm -rf doc/api/
 
 # Phony targets
-.PHONY: create_package publish_package bump_version tag_repository generate_docs dart_fix dart_format dart_analyze build_runner_generate build_runner_watch dart_test make-release-pub-dev make-release-github clean
+.PHONY: create_package publish_package bump_version tag_repository docs dart_fix dart_format dart_analyze generate watch test build release-github release-pub-dev clean
