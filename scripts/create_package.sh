@@ -16,21 +16,40 @@ fi
 if [ -z "$PACKAGE_NAME" ]; then
   echo "Creating a new Dart package in the repository root."
   dart create -t package . --force
+  PACKAGE_NAME=$(basename $(pwd))
 else
   echo "Creating a new Dart package '$PACKAGE_NAME' in the repository root."
   dart create -t package $PACKAGE_NAME .
 fi
 
+# Get the repository URL minus the .git extension
+REPO_URL=$(git config --get remote.origin.url | sed 's/\.git$//')
+if [ -z "$REPO_URL" ]; then
+  echo "Failed to get the repository URL. Please set the remote origin URL."
+  exit 1
+fi
 
-# Navigate to the package directory
-cd $PACKAGE_NAME
+# If the repository URL is an SSH URL, convert it to an HTTPS URL
+if [[ $REPO_URL == git@* ]]; then
+  REPO_URL=$(echo $REPO_URL | sed 's/^git@/https:\/\//' | sed 's/:/\//')
+fi
+
+DART_VERSION=$(dart --version 2>&1 | awk '{print $4}')
+
 
 # Update dependencies and dev_dependencies in pubspec.yaml
 cat <<EOL >> pubspec.yaml
+name: $PACKAGE_NAME
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+repository: $REPO_URL
+
+environment:
+  sdk: ^$DART_VERSION
+
 
 # Add regular dependencies here.
 dependencies:
-  freezed_annotation: ^2.4.4
 
 dev_dependencies:
   lints: '>= 4.0.0'
@@ -38,8 +57,8 @@ dev_dependencies:
   flutter_lints: '>= 4.0.0'
   build_runner: '>= 2.4.13'
   custom_lint: '>= 0.7.0'
-  freezed: '>= 2.5.7'
   mockito: '>= 5.0.0'
+EOL
 
 # Get the dependencies
 dart pub get
