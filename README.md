@@ -8,6 +8,15 @@ This repository provides a template for creating Dart packages. It includes a Ma
 
 To create a new Dart package, use the following command:
 
+Create a new Dart package with the repo name:
+
+```sh
+make create_package
+```
+
+or
+
+Create a new Dart package with a custom name:
 ```sh
 make create_package PACKAGE_NAME=<your_package_name>
 ```
@@ -31,6 +40,15 @@ To bump the semver version (major, minor, patch) of the Dart package, use the fo
 ```sh
 make bump_version VERSION_TYPE=<major|minor|patch>
 ```
+
+### Build
+
+Perform pre-requisite steps to release the package with the following command:
+
+```sh
+make build
+```
+
 
 This will bump the version of the Dart package based on the specified version type.
 
